@@ -7,3 +7,5 @@ resource "aws_vpc" "my_vpc" {
     Name = "my-vpc"
   }
 }
+
+# Test
