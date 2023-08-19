@@ -1,4 +1,4 @@
-# Create random resourse for tags
+# Create random resource for tags
 resource "random_id" "random" {
   byte_length = 2
 }
