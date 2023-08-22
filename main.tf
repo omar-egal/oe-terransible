@@ -1,3 +1,6 @@
+# Get availability zones
+data "aws_availability_zones" "available" {}
+
 # Create random resource for tags
 resource "random_id" "random" {
   byte_length = 2
@@ -48,5 +51,31 @@ resource "aws_default_route_table" "terransible_private_rt" {
 
   tags = {
     Name = "terransible-private"
+  }
+}
+
+# Create public subnet(s)
+resource "aws_subnet" "terransible_public_subnet" {
+  count                   = length(var.public_cidrs)
+  vpc_id                  = aws_vpc.my_vpc.id
+  cidr_block              = var.public_cidrs[count.index]
+  map_public_ip_on_launch = true
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+
+  tags = {
+    Name = "terransible-plublic-${count.index + 1}"
+  }
+}
+
+# Create private subnet(s)
+resource "aws_subnet" "terransible_private_subnet" {
+  count                   = length(var.private_cidrs)
+  vpc_id                  = aws_vpc.my_vpc.id
+  cidr_block              = var.private_cidrs[count.index]
+  map_public_ip_on_launch = false
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+
+  tags = {
+    Name = "terransible-private-${count.index + 1}"
   }
 }
